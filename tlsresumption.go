@@ -17,22 +17,24 @@ var (
 )
 
 // MakeClientSessionStates makes num client session states for connecting to the TLS server at the given
-// address. It will try num times and return as many client session states as it can successfully build,
-// returning the latest error.
+// address. It connections to the server and handshakes num times and returns as many client session states
+// as it can successfully build, returning the latest error.
+//
+// Note, this does not verify the server's certificate so is potentially susceptible to MITM attacks.
 func MakeClientSessionStates(addr string, num int) ([]string, error) {
 	result := make([]string, 0, num)
 
-	var conn *utls.UConn
-	var err error
+	var finalErr error
 	for i := 0; i < num; i++ {
-		conn, err = dialUTLS(nil, addr)
+		conn, err := dialUTLS(nil, addr)
 		if err != nil {
+			finalErr = err
 			continue
 		}
 		ss := conn.HandshakeState.Session
 		conn.Close()
 		if ss == nil {
-			err = errors.New("No client session state found")
+			err = errors.New("no client session state found")
 			continue
 		}
 
@@ -44,14 +46,14 @@ func MakeClientSessionStates(addr string, num int) ([]string, error) {
 		result = append(result, ssString)
 	}
 
-	return result, err
+	return result, finalErr
 }
 
 // ParseClientSessionState parses the serialized client session state into a utls.ClientSessionState
 func ParseClientSessionState(serialized string) (*utls.ClientSessionState, error) {
 	b, err := base64.StdEncoding.DecodeString(serialized)
 	if err != nil {
-		return nil, errors.New("Unable to base64 decode serialized client session state: %v", err)
+		return nil, errors.New("unable to base64 decode serialized client session state: %v", err)
 	}
 	sss := &serializedClientSessionState{}
 	err = json.Unmarshal(b, sss)
@@ -73,13 +75,13 @@ func dialUTLS(ss *utls.ClientSessionState, addr string) (*utls.UConn, error) {
 
 	conn, err := net.Dial("tcp", addr)
 	if err != nil {
-		return nil, errors.New("Unable to dial %v: %v", addr, err)
+		return nil, errors.New("unable to dial %v: %v", addr, err)
 	}
 	uconn := utls.UClient(conn, cfg, utls.HelloChrome_Auto)
 	uconn.SetSessionState(ss)
 	if handshakeErr := uconn.Handshake(); handshakeErr != nil {
 		conn.Close()
-		return nil, errors.New("Error handshaking with %v: %v", addr, handshakeErr)
+		return nil, errors.New("error handshaking with %v: %v", addr, handshakeErr)
 	}
 	return uconn, nil
 }
@@ -101,7 +103,7 @@ func marshalClientSessionState(ss *utls.ClientSessionState) (string, error) {
 
 	b, err := json.Marshal(sss)
 	if err != nil {
-		return "", errors.New("Unable to marshal client session state to JSON: %v", err)
+		return "", errors.New("unable to marshal client session state to JSON: %v", err)
 	}
 
 	return base64.StdEncoding.EncodeToString(b), nil
