@@ -34,12 +34,13 @@ func MakeClientSessionStates(addr string, num int) ([]string, error) {
 		ss := conn.HandshakeState.Session
 		conn.Close()
 		if ss == nil {
-			err = errors.New("no client session state found")
+			finalErr = errors.New("no client session state found")
 			continue
 		}
 
 		ssString, err := marshalClientSessionState(ss)
 		if err != nil {
+			finalErr = err
 			continue
 		}
 
