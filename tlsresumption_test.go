@@ -108,6 +108,7 @@ func listenTLS(pk *keyman.PrivateKey, cert *keyman.Certificate, addr string) (ne
 	l, err := tls.Listen("tcp", addr, &tls.Config{
 		Certificates:     []tls.Certificate{kp},
 		SessionTicketKey: sessionTicketKey,
+		MaxVersion:       tls.VersionTLS12,
 	})
 
 	if err == nil {
