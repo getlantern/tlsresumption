@@ -38,7 +38,7 @@ func MakeClientSessionStates(addr string, num int) ([]string, error) {
 			continue
 		}
 
-		ssString, err := marshalClientSessionState(ss)
+		ssString, err := SerializeClientSessionState(ss)
 		if err != nil {
 			finalErr = err
 			continue
@@ -94,7 +94,8 @@ type serializedClientSessionState struct {
 	MasterSecret  []byte
 }
 
-func marshalClientSessionState(ss *utls.ClientSessionState) (string, error) {
+// SerializeClientSessionState serializes a ClientSessionState into a string representation of the same.
+func SerializeClientSessionState(ss *utls.ClientSessionState) (string, error) {
 	sss := &serializedClientSessionState{
 		SessionTicket: ss.SessionTicket(),
 		Vers:          ss.Vers(),
