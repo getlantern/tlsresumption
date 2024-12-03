@@ -1,9 +1,9 @@
 package tlsresumption
 
 import (
+	"crypto/rand"
 	"crypto/tls"
 	"io"
-	"math/rand"
 	"net"
 	"sync"
 	"testing"
@@ -61,12 +61,18 @@ func TestMakeClientSecrets(t *testing.T) {
 		go func() {
 			defer wg.Done()
 			log.Debugf("Dialing %v", l.Addr().String())
-			conn, err := dialUTLS(ss, l.Addr().String())
+			cache := utls.NewLRUClientSessionCache(1)
+			conn, err := dialUTLS(cache, ss, l.Addr().String())
 			if !assert.NoError(t, err) {
 				return
 			}
-			assert.EqualValues(t, ss.MasterSecret(), conn.HandshakeState.Session.MasterSecret(), "New connection should reuse client session state")
+			css, ok := cache.Get(l.Addr().String())
+			if !assert.True(t, ok) {
+				return
+			}
 			defer conn.Close()
+			assert.EqualValues(t, ss.MasterSecret(), css.MasterSecret(), "New connection should reuse client session state")
+			assert.True(t, conn.ConnectionState().DidResume, "New connection should resume")
 			_, err = conn.Write(text)
 			if !assert.NoError(t, err) {
 				return
