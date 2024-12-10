@@ -2,7 +2,7 @@ module github.com/getlantern/tlsresumption
 
 go 1.21
 
-toolchain go1.23.2
+toolchain go1.22.8
 
 require (
 	github.com/getlantern/errors v1.0.1
