@@ -1,20 +1,19 @@
 module github.com/getlantern/tlsresumption
 
 go 1.21
-
-toolchain go1.22.8
+toolchain go1.24.1
 
 require (
 	github.com/getlantern/errors v1.0.1
 	github.com/getlantern/golog v0.0.0-20200929154820-62107891371a
 	github.com/getlantern/keyman v0.0.0-20180207174507-f55e7280e93a
-	github.com/refraction-networking/utls v1.6.7
+	github.com/refraction-networking/utls v1.7.0
 	github.com/stretchr/testify v1.3.0
 )
 
 require (
 	github.com/andybalholm/brotli v1.0.6 // indirect
-	github.com/cloudflare/circl v1.3.7 // indirect
+	github.com/cloudflare/circl v1.5.0 // indirect
 	github.com/davecgh/go-spew v1.1.0 // indirect
 	github.com/getlantern/byteexec v0.0.0-20170405023437-4cfb26ec74f4 // indirect
 	github.com/getlantern/context v0.0.0-20190109183933-c447772a6520 // indirect
@@ -27,6 +26,6 @@ require (
 	github.com/klauspost/compress v1.17.4 // indirect
 	github.com/oxtoacart/bpool v0.0.0-20190530202638-03653db5a59c // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	golang.org/x/crypto v0.28.0 // indirect
-	golang.org/x/sys v0.26.0 // indirect
+	golang.org/x/crypto v0.36.0 // indirect
+	golang.org/x/sys v0.31.0 // indirect
 )
