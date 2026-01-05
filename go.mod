@@ -1,8 +1,6 @@
 module github.com/getlantern/tlsresumption
 
-go 1.21
-
-toolchain go1.22.8
+go 1.24.0
 
 require (
 	github.com/getlantern/errors v1.0.1
@@ -23,6 +21,6 @@ require (
 	github.com/klauspost/compress v1.17.4 // indirect
 	github.com/oxtoacart/bpool v0.0.0-20190530202638-03653db5a59c // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	golang.org/x/crypto v0.28.0 // indirect
-	golang.org/x/sys v0.26.0 // indirect
+	golang.org/x/crypto v0.45.0 // indirect
+	golang.org/x/sys v0.38.0 // indirect
 )
